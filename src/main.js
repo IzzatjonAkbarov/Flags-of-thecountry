@@ -41,7 +41,10 @@ form.addEventListener("submit", (e) => {
 function filteringdata(data, searchedElement) {
   data.filter((element) => {
     let nameofthecountry = element.name.common;
-    if (nameofthecountry.toLowerCase().trim().includes(searchedElement)) {
+    if (
+      nameofthecountry.toLowerCase().trim().includes(searchedElement) &&
+      searchedElement !== ""
+    ) {
       searchedarea.innerHTML = "";
       let div = document.createElement("div");
       div.innerHTML = ` <div
@@ -50,7 +53,12 @@ function filteringdata(data, searchedElement) {
                 <p>${element.name.common}</p>
               </div>`;
       searchedarea.append(div);
-      console.log(element);
+      searchedarea.addEventListener("click", (e) => {
+        localStorage.clear();
+
+        localStorage.setItem("dataofthecountry", JSON.stringify(element));
+        window.location.href = "./admin.html";
+      });
     } else {
       console.log("not found");
     }
@@ -80,7 +88,7 @@ fetch(`${Base_url}all`)
 let category = document.getElementById("category");
 
 category.addEventListener("click", (e) => {
-  if (e.target.id) {
+  if (e.target.id && e.target.id !== "category") {
     fetch(`${Base_url}region/${e.target.id}`)
       .then((data) => data.json())
       .then((data) => {
